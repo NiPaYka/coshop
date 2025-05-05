@@ -63,8 +63,8 @@ const Settings = () => {
     promotions: false
   });
   const [profile, setProfile] = useState({
-    name: 'Иван Иванов',
-    email: 'ivan@example.com',
+    name: 'name surname',
+    email: 'name@example.com',
     phone: '+7 (999) 123-45-67'
   });
   const navigate = useNavigate();
@@ -89,13 +89,13 @@ const Settings = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 }, px: { xs: 1, sm: 2, md: 0 } }}>
+    <Container maxWidth="lg" sx={{ py: { xs: 2, md: 8 }, px: { xs: 0.5, sm: 2, md: 0 } }}>
       <Fade in timeout={800}>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: { xs: 2, md: 4 } }}>
           <Button
             startIcon={<ArrowBack />}
             onClick={() => navigate('/profile')}
-            sx={{ mr: 2, fontSize: { xs: '0.95rem', md: '1rem' }, px: { xs: 1, md: 2 }, py: { xs: 0.5, md: 1 } }}
+            sx={{ mr: 2, fontSize: { xs: '0.95rem', md: '1rem' }, px: { xs: 1, md: 2 }, py: { xs: 0.5, md: 1 }, borderRadius: 3 }}
           >
             Назад
           </Button>
@@ -105,7 +105,7 @@ const Settings = () => {
             sx={{ 
               fontWeight: 700,
               color: 'primary.main',
-              fontSize: { xs: '1.3rem', md: '2rem' }
+              fontSize: { xs: '1.2rem', md: '2rem' }
             }}
           >
             Настройки
@@ -113,8 +113,8 @@ const Settings = () => {
         </Box>
       </Fade>
 
-      <Card>
-        <CardContent>
+      <Card sx={{ borderRadius: { xs: 2, md: 4 }, boxShadow: { xs: 1, md: 3 } }}>
+        <CardContent sx={{ p: { xs: 1, md: 3 } }}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs 
               value={value} 

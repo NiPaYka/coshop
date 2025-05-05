@@ -13,6 +13,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { LocalShipping, Spa, Favorite } from '@mui/icons-material';
 import { images } from '../assets/images';
+import Testimonials from '../components/Testimonials';
 
 const features = [
   {
@@ -176,6 +177,9 @@ const Home = () => {
           ))}
         </Grid>
       </Container>
+
+      {/* Testimonials Section */}
+      <Testimonials />
     </Box>
   );
 };

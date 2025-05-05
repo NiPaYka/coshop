@@ -11,31 +11,21 @@ import {
   IconButton,
   Fade
 } from '@mui/material';
-import { Delete as DeleteIcon, ShoppingCart } from '@mui/icons-material';
-import { images } from '../assets/images';
+import { Delete as DeleteIcon, Add, Remove, ShoppingCart } from '@mui/icons-material';
+import { useCart } from '../context/CartContext';
 
 const Cart = () => {
-  const cartItems = [
-    {
-      id: 1,
-      name: 'Hydrating Face Cream',
-      price: 49.99,
-      image: images.products.faceCream,
-      quantity: 1,
-    },
-    {
-      id: 2,
-      name: 'Luxury Perfume',
-      price: 129.99,
-      image: images.products.perfume,
-      quantity: 1,
-    },
-  ];
+  const { cartItems, removeFromCart, increase, decrease, clearCart } = useCart();
 
   const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
+  const handlePlaceOrder = () => {
+    window.open('https://t.me/Nipayka', '_blank');
+    clearCart();
+  };
+
   return (
-    <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 }, px: { xs: 1, sm: 2, md: 0 } }}>
+    <Container maxWidth="lg" sx={{ py: { xs: 2, md: 8 }, px: { xs: 0.5, sm: 2, md: 0 } }}>
       <Fade in timeout={800}>
         <Typography 
           variant="h3" 
@@ -43,10 +33,10 @@ const Cart = () => {
           gutterBottom
           sx={{ 
             textAlign: 'center',
-            mb: { xs: 3, md: 6 },
+            mb: { xs: 2, md: 6 },
             fontWeight: 700,
             color: 'primary.main',
-            fontSize: { xs: '1.5rem', md: '2.5rem' }
+            fontSize: { xs: '1.2rem', md: '2.5rem' }
           }}
         >
           Корзина
@@ -54,46 +44,55 @@ const Cart = () => {
       </Fade>
 
       {cartItems.length === 0 ? (
-        <Box sx={{ textAlign: 'center', py: 8 }}>
-          <ShoppingCart sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
-          <Typography variant="h5" color="text.secondary" gutterBottom sx={{ fontSize: { xs: '1.1rem', md: '1.5rem' } }}>
+        <Box sx={{ textAlign: 'center', py: { xs: 4, md: 8 } }}>
+          <ShoppingCart sx={{ fontSize: { xs: 48, md: 64 }, color: 'text.secondary', mb: 2 }} />
+          <Typography variant="h5" color="text.secondary" gutterBottom sx={{ fontSize: { xs: '1rem', md: '1.5rem' } }}>
             Ваша корзина пуста
           </Typography>
           <Button
             variant="contained"
             color="primary"
             size="large"
-            sx={{ mt: 2, fontSize: { xs: '1rem', md: '1.2rem' }, px: { xs: 3, md: 5 }, py: { xs: 1.2, md: 2 } }}
+            sx={{ mt: 2, fontSize: { xs: '0.95rem', md: '1.2rem' }, px: { xs: 2, md: 5 }, py: { xs: 1, md: 2 }, borderRadius: 3 }}
+            href="/products"
           >
             Перейти к товарам
           </Button>
         </Box>
       ) : (
-        <Grid container spacing={{ xs: 2, md: 4 }}>
+        <Grid container spacing={{ xs: 1, md: 4 }}>
           <Grid item xs={12} md={8}>
             {cartItems.map((item) => (
-              <Card key={item.id} sx={{ mb: 2 }}>
-                <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'flex-start', sm: 'center' } }}>
+              <Card key={item.id} sx={{ mb: { xs: 1, md: 2 }, borderRadius: { xs: 2, md: 4 }, boxShadow: { xs: 1, md: 3 } }}>
+                <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' } }}>
                   <CardMedia
                     component="img"
-                    sx={{ width: { xs: '100%', sm: 150 }, height: { xs: 180, sm: 150 }, objectFit: 'cover' }}
+                    sx={{ width: { xs: '100%', sm: 150 }, height: { xs: 140, sm: 150 }, objectFit: 'cover', borderRadius: { xs: '8px 8px 0 0', sm: '8px 0 0 8px' } }}
                     image={item.image}
                     alt={item.name}
                   />
-                  <CardContent sx={{ flex: 1, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, width: '100%' }}>
+                  <CardContent sx={{ flex: 1, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'stretch', sm: 'center' }, width: '100%', p: { xs: 1, md: 2 } }}>
                     <Box sx={{ mb: { xs: 2, sm: 0 } }}>
-                      <Typography variant="h6" component="div" sx={{ fontSize: { xs: '1.1rem', md: '1.3rem' } }}>
+                      <Typography variant="h6" component="div" sx={{ fontSize: { xs: '1rem', md: '1.3rem' }, mb: 0.5 }}>
                         {item.name}
                       </Typography>
-                      <Typography variant="body1" color="primary.main" sx={{ fontSize: { xs: '1rem', md: '1.1rem' } }}>
+                      <Typography variant="body1" color="primary.main" sx={{ fontSize: { xs: '0.95rem', md: '1.1rem' }, mb: 0.5 }}>
                         ${item.price.toFixed(2)}
                       </Typography>
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.95rem', md: '1rem' } }}>
-                        Количество: {item.quantity}
-                      </Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+                        <IconButton size="medium" sx={{ p: 0.5 }} onClick={() => decrease(item.id)}>
+                          <Remove fontSize="small" />
+                        </IconButton>
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '1rem', md: '1.1rem' }, mx: 1, minWidth: 24, textAlign: 'center' }}>
+                          {item.quantity}
+                        </Typography>
+                        <IconButton size="medium" sx={{ p: 0.5 }} onClick={() => increase(item.id)}>
+                          <Add fontSize="small" />
+                        </IconButton>
+                      </Box>
                     </Box>
-                    <IconButton color="error" sx={{ alignSelf: { xs: 'flex-end', sm: 'center' } }}>
-                      <DeleteIcon />
+                    <IconButton color="error" sx={{ alignSelf: { xs: 'flex-end', sm: 'center' }, mt: { xs: 1, sm: 0 } }} onClick={() => removeFromCart(item.id)}>
+                      <DeleteIcon fontSize="medium" />
                     </IconButton>
                   </CardContent>
                 </Box>
@@ -101,9 +100,9 @@ const Cart = () => {
             ))}
           </Grid>
           <Grid item xs={12} md={4}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" gutterBottom sx={{ fontSize: { xs: '1.1rem', md: '1.3rem' } }}>
+            <Card sx={{ borderRadius: { xs: 2, md: 4 }, boxShadow: { xs: 1, md: 3 }, mt: { xs: 2, md: 0 } }}>
+              <CardContent sx={{ p: { xs: 2, md: 3 } }}>
+                <Typography variant="h6" gutterBottom sx={{ fontSize: { xs: '1rem', md: '1.3rem' } }}>
                   Итого
                 </Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
@@ -125,7 +124,8 @@ const Cart = () => {
                   color="primary"
                   fullWidth
                   size="large"
-                  sx={{ fontSize: { xs: '1rem', md: '1.2rem' }, py: { xs: 1.2, md: 2 } }}
+                  onClick={handlePlaceOrder}
+                  sx={{ fontSize: { xs: '1rem', md: '1.2rem' }, py: { xs: 1, md: 2 }, borderRadius: 3 }}
                 >
                   Оформить заказ
                 </Button>

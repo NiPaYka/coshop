@@ -18,6 +18,7 @@ import { Search, ShoppingCart } from '@mui/icons-material';
 import { images } from '../assets/images';
 import { useNavigate } from 'react-router-dom';
 import { useSwipeable } from 'react-swipeable';
+import { useCart } from '../context/CartContext';
 
 const products = [
   {
@@ -69,10 +70,16 @@ const Products = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const theme = useTheme();
   const navigate = useNavigate();
+  const { addToCart } = useCart();
 
   const handleAddToCart = (product: typeof products[0]) => {
-    // Здесь будет логика добавления в корзину
-    navigate('/cart');
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      quantity: 1
+    });
   };
 
   const swipeHandlers = useSwipeable({
@@ -99,14 +106,14 @@ const Products = () => {
   });
 
   return (
-    <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 }, px: { xs: 1, sm: 2, md: 0 } }}>
+    <Container maxWidth="lg" sx={{ py: { xs: 2, md: 8 }, px: { xs: 0.5, sm: 2, md: 0 } }}>
       <Fade in timeout={700}>
-        <Typography variant="h2" align="center" sx={{ mb: { xs: 3, md: 6 }, fontWeight: 'bold', color: 'primary.main', letterSpacing: 1, fontSize: { xs: '1.5rem', md: '2.5rem' } }}>
+        <Typography variant="h2" align="center" sx={{ mb: { xs: 2, md: 6 }, fontWeight: 'bold', color: 'primary.main', letterSpacing: 1, fontSize: { xs: '1.2rem', md: '2.5rem' } }}>
           Наши продукты
         </Typography>
       </Fade>
 
-      <Box sx={{ mb: 4, display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <Box sx={{ mb: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
         <TextField
           fullWidth
           variant="outlined"
@@ -124,12 +131,14 @@ const Products = () => {
             '& .MuiOutlinedInput-root': {
               borderRadius: '30px',
               backgroundColor: theme.palette.background.paper,
-              boxShadow: '0 2px 12px 0 rgba(123,108,246,0.06)'
+              boxShadow: '0 2px 12px 0 rgba(123,108,246,0.06)',
+              fontSize: { xs: '1rem', md: '1.1rem' },
+              minHeight: { xs: 40, md: 48 }
             }
           }}
         />
 
-        <Box {...swipeHandlers} sx={{ display: 'flex', gap: 1, overflowX: 'auto', pb: 1, scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' } }}>
+        <Box {...swipeHandlers} sx={{ display: 'flex', gap: 1, overflowX: 'auto', pb: 1, scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' }, mx: { xs: -1, md: 0 }, px: { xs: 1, md: 0 } }}>
           {categories.map((category) => (
             <Chip
               key={category}
@@ -144,6 +153,9 @@ const Products = () => {
                 color: selectedCategory === category ? '#fff' : theme.palette.text.primary,
                 boxShadow: selectedCategory === category ? '0 2px 8px 0 rgba(123,108,246,0.10)' : 'none',
                 transition: 'all 0.3s',
+                px: { xs: 2, md: 3 },
+                py: { xs: 1, md: 1.5 },
+                minWidth: { xs: 90, md: 110 },
                 '&:hover': {
                   background: 'linear-gradient(90deg, #F6B6D8 0%, #7B6CF6 100%)',
                   color: '#fff',
@@ -166,9 +178,9 @@ const Products = () => {
                   flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  p: { xs: 1.5, md: 2 },
-                  borderRadius: 5,
-                  boxShadow: '0 4px 32px 0 rgba(123,108,246,0.10)',
+                  p: { xs: 1, md: 2 },
+                  borderRadius: { xs: 3, md: 5 },
+                  boxShadow: { xs: 1, md: 3 },
                   background: '#fff',
                   transition: 'box-shadow 0.3s, transform 0.3s',
                   '&:hover': {
@@ -198,64 +210,28 @@ const Products = () => {
                     component="h2" 
                     sx={{ 
                       fontWeight: 700, 
-                      fontSize: { xs: '1.1rem', md: '1.5rem' },
-                      mb: { xs: 1, md: 2 }
+                      fontSize: { xs: '1rem', md: '1.3rem' },
+                      mb: 1
                     }}
                   >
                     {product.name}
                   </Typography>
-                  <Typography 
-                    sx={{ 
-                      mb: 2, 
-                      color: 'text.secondary', 
-                      minHeight: { xs: 'auto', md: 48 },
-                      fontSize: { xs: '0.9rem', md: '1.1rem' },
-                      lineHeight: 1.4
-                    }}
-                  >
+                  <Typography variant="body1" color="primary.main" sx={{ fontWeight: 600, mb: 1, fontSize: { xs: '1rem', md: '1.1rem' } }}>
+                    {product.price} ₽
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2, fontSize: { xs: '0.95rem', md: '1rem' } }}>
                     {product.description}
                   </Typography>
-                  <Box sx={{ 
-                    display: 'flex', 
-                    justifyContent: 'space-between', 
-                    alignItems: 'center', 
-                    mb: 2,
-                    flexDirection: { xs: 'column', sm: 'row' },
-                    gap: { xs: 1, sm: 0 }
-                  }}>
-                    <Typography 
-                      variant="h6" 
-                      color="primary" 
-                      sx={{ 
-                        fontWeight: 700, 
-                        fontSize: { xs: '1.2rem', md: '1.4rem' }
-                      }}
-                    >
-                      {product.price} ₽
-                    </Typography>
-                    <Button
-                      variant="contained"
-                      startIcon={<ShoppingCart />}
-                      onClick={() => handleAddToCart(product)}
-                      sx={{
-                        borderRadius: '20px',
-                        fontWeight: 600,
-                        fontSize: { xs: '0.9rem', md: '1rem' },
-                        py: { xs: 0.5, md: 1 },
-                        px: { xs: 2, md: 3 },
-                        width: { xs: '100%', sm: 'auto' },
-                        boxShadow: '0 2px 8px 0 rgba(123,108,246,0.10)',
-                        transition: 'all 0.3s',
-                        '&:hover': {
-                          transform: 'scale(1.04)',
-                          background: 'linear-gradient(90deg, #F6B6D8 0%, #7B6CF6 100%)',
-                          color: '#fff',
-                        }
-                      }}
-                    >
-                      В корзину
-                    </Button>
-                  </Box>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    startIcon={<ShoppingCart />}
+                    onClick={() => handleAddToCart(product)}
+                    sx={{ mt: 1, fontWeight: 600, fontSize: { xs: '1rem', md: '1.1rem' }, py: { xs: 1, md: 1.2 }, borderRadius: 3 }}
+                  >
+                    В корзину
+                  </Button>
                 </CardContent>
               </Card>
             </Grid>
